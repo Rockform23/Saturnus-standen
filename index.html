@@ -40,15 +40,22 @@
     </div>
   </header>
 
-  <!-- Content (Nevobo Widget) -->
-  <main class="flex-1 p-8 flex flex-col justify-center items-center">
+  <!-- Content & Switcher -->
+  <main class="flex-1 p-8 flex flex-col items-center space-y-4">
+    
+    <!-- Knoppen voor Uitslagen / Programma -->
+    <div class="flex space-x-4">
+      <button onclick="switchWidget('uitslagen')" id="btn-uitslagen" class="px-6 py-2 rounded-xl font-bold text-sm bg-saturnus-gold text-saturnus-navy shadow-lg transition-all">
+        🏆 Laatste Uitslagen
+      </button>
+      <button onclick="switchWidget('programma')" id="btn-programma" class="px-6 py-2 rounded-xl font-bold text-sm bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all">
+        📅 Komend Programma
+      </button>
+    </div>
+
     <div class="w-full max-w-6xl bg-white text-slate-900 rounded-2xl border border-slate-700 p-6 shadow-2xl">
-      <h2 class="text-xl font-bold text-saturnus-navy mb-4 border-b pb-2 uppercase tracking-wider">
-        🏐 Programma & Live Standen
-      </h2>
-      <!-- Officiële Nevobo Widget voor VV Saturnus (CKM0Y96) -->
-      <div class="min-h-[450px]">
-        <script src="https://www.volleybal.nl/widget/programma/CKM0Y96"></script>
+      <div id="widget-container" class="min-h-[450px]">
+        <!-- Nevobo Widget wordt hier geladen -->
       </div>
     </div>
   </main>
@@ -66,6 +73,30 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    function switchWidget(type) {
+      const container = document.getElementById('widget-container');
+      const btnUitslagen = document.getElementById('btn-uitslagen');
+      const btnProgramma = document.getElementById('btn-programma');
+
+      if (type === 'uitslagen') {
+        btnUitslagen.className = "px-6 py-2 rounded-xl font-bold text-sm bg-saturnus-gold text-saturnus-navy shadow-lg";
+        btnProgramma.className = "px-6 py-2 rounded-xl font-bold text-sm bg-slate-800 text-slate-300 hover:bg-slate-700";
+      } else {
+        btnProgramma.className = "px-6 py-2 rounded-xl font-bold text-sm bg-saturnus-gold text-saturnus-navy shadow-lg";
+        btnUitslagen.className = "px-6 py-2 rounded-xl font-bold text-sm bg-slate-800 text-slate-300 hover:bg-slate-700";
+      }
+
+      container.innerHTML = '';
+      const script = document.createElement('script');
+      script.src = `https://www.volleybal.nl/widget/${type}/CKM0Y96`;
+      script.async = true;
+      container.appendChild(script);
+    }
+
+    // Standaard openen met Uitslagen
+    switchWidget('uitslagen');
+
+    // Automatisch herladen na 2 minuten
     setTimeout(() => {
       window.location.reload();
     }, 120000);
